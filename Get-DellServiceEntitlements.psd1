@@ -3,16 +3,16 @@
     RootModule = 'Get-DellServiceEntitlements.psm1'
 
     # Version number of this module.
-    ModuleVersion = '1.0.0'
+    ModuleVersion = '0.0.1'
 
     # ID used to uniquely identify this module
-    GUID = '12345678-1234-1234-1234-123456789012'
+    GUID = '16ae8a67-ac4d-4202-9563-348d08fc3ebb'
 
     # Author of this module
-    Author = 'Your Name'
+    Author = 'William Ford'
 
     # Company or vendor of this module
-    CompanyName = 'Your Company'
+    CompanyName = 'Managed Solution'
 
     # Description of the functionality provided by this module
     Description = 'A module to retrieve Dell service entitlements and update ConnectWise Manage configurations.'
