@@ -27,12 +27,18 @@ function Save-Credential {
         [string]$username,
         [SecureString]$password
     )
-
+    # Check if target is provided
+    if (-not $target) {
+        Write-Host "Target name is required." -ForegroundColor Red
+        return
+    }
+    # Breakdown the Target name removing the end \filename.xml
+    $targetPath = $target -replace "\.xml", ""
     # Create directory if it does not exist
-    if (-Not (Test-Path "$env:USERPROFILE\.dell")) {
-        New-Item -ItemType Directory -Path "$env:USERPROFILE\.dell"
+    if (-Not (Test-Path $targetPath)) {
+        New-Item -ItemType Directory -Path $targetPath
     }
     # Save the credential to a file
     $credential = New-Object -TypeName PSCredential -ArgumentList $username, $password
-    $credential | Export-Clixml -Path "$env:USERPROFILE\.dell\$target.xml"
+    $credential | Export-Clixml -Path $target
 }
