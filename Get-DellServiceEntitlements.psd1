@@ -3,7 +3,7 @@
     RootModule = 'Get-DellServiceEntitlements.psm1'
 
     # Version number of this module.
-    ModuleVersion = '0.0.1'
+    ModuleVersion = '0.0.2'
 
     # ID used to uniquely identify this module
     GUID = '16ae8a67-ac4d-4202-9563-348d08fc3ebb'
@@ -19,9 +19,10 @@
 
     # Functions to export from this module
     FunctionsToExport = @(
-        'Get-DellToken',
+        'Grant-DellToken',
+        'Get-DellApiKeys',
         'Save-Credential',
-        'Get-SavedCredential',
+        'Import-SavedCredential',
         'Test-DellToken',
         'Get-DellWarranty',
         'Get-SerialNumber'
