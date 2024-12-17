@@ -34,7 +34,7 @@ function Get-DellApiKey {
         Write-Host "Credential file not found. Please enter your API Key and Secret."
         $userClientId = Read-Host "Enter API Key"
         $userClientSecret = Read-Host "Enter Client Secret" -AsSecureString
-        Save-Credential -target $credentialFile -username $userClientId -password $userClientSecret
+        Save-DellCredential -target $credentialFile -username $userClientId -password $userClientSecret
         # Set the environment variables
         $env:USER_CLIENT_ID = $userClientId
         $env:USER_CLIENT_SECRET = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($userClientSecret))

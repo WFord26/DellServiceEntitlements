@@ -23,6 +23,17 @@ function Import-SavedCredential {
     param (
         [string]$target
     )
+    # Check if target is provided
+    if (-not $target) {
+        Write-Host "Target name is required to call Import-SavedCredential." -ForegroundColor Red
+        return
+    }
+    # Check if the file exists
+    if (-not (Test-Path $target)) {
+        Write-Host "Credential file not found at path: $target" -ForegroundColor Red
+        Get-DellApiKey
+        return
+    }
     $credential = Import-Clixml -Path $target
     return $credential
 }
