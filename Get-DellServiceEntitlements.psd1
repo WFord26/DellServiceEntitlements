@@ -21,7 +21,7 @@
     FunctionsToExport = @(
         'Grant-DellToken',
         'Get-DellApiKeys',
-        'Save-Credential',
+        'Save-DellCredential',
         'Import-SavedCredential',
         'Test-DellToken',
         'Get-DellWarranty',
