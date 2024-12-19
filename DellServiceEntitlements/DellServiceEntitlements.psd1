@@ -3,7 +3,7 @@
     RootModule = 'Get-DellServiceEntitlements.psm1'
 
     # Version number of this module.
-    ModuleVersion = '0.0.3'
+    ModuleVersion = '0.1.0'
 
     # ID used to uniquely identify this module
     GUID = '16ae8a67-ac4d-4202-9563-348d08fc3ebb'
@@ -40,6 +40,15 @@
 
     # Private data to pass to the module specified in RootModule/ModuleToProcess
     PrivateData = @{
+       
+        # Tags applied to this module. These help with module discovery in online galleries.
+        Tags         = @('Managed Solution', 'Dell', 'Service Entitlements', 'REST', 'API')
+
+        # A URL to the license for this module.
+        LicenseUri   = 'https://github.com/WFord26/DellServiceEntitlements/blob/main/license'
+
+        # A URL to the main website for this project.
+        ProjectUri   = 'https://github.com/WFord26/DellServiceEntitlements' 
 
     }
 }
