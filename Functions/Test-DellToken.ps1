@@ -35,8 +35,6 @@ function Test-DellToken {
                 $env:DELL_API_KEY = $credential.UserName
                 $env:DELL_CLIENT_SECRET = $credential.GetNetworkCredential().Password
                 Grant-DellToken
-            } else {
-                Write-Host "Token is still valid until: $($dellAuthTokenImport.expires)"
-            }
+            } 
     }
 }
