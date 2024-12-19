@@ -33,7 +33,7 @@ This script is intended for use with Dell computers only. It checks if the compu
 function Get-SerialNumber{
     [CmdletBinding()]
     param (
-        [bool]$csv,
+        [bool]$csv = $false,
         [string]$csvPath,
         [string]$serviceTag
     )
@@ -47,23 +47,32 @@ function Get-SerialNumber{
 
         $csvContent = Import-Csv -Path $csvPath
         foreach ($row in $csvContent) {
-            $serviceTag = $row.ServiceTag
-            Get-DellWarranty -serviceTag $serviceTag
+            $csvServiceTag = $row.ServiceTag
+            $warranty = Get-DellWarranty -serviceTag $csvServiceTag
             $warranty | Out-File -FilePath "$($csvPath).json" -Append
         }
-    } else {
-        # Check if Dell Computer
-        if ($null -ne $serviceTag) {
-            Get-DellWarranty -serviceTag $serviceTag
-            $warranty
+    }
+    # If no service tag is provided, attempt to retrieve from local machine
+    elseif (-not $serviceTag) {
+        if (-not ((Get-WmiObject Win32_ComputerSystem | Select-Object -ExpandProperty Manufacturer) -eq "Dell Inc.")) {
+            Write-Host "This script is only for Dell computers"
+            Exit
+        }
+        write-host "Service Tag not provided, attempting to retrieve from local machine"
+        $serialNumber = Get-WmiObject Win32_BIOS | Select-Object -ExpandProperty SerialNumber
+        Get-DellWarranty -serviceTag $serialNumber
+        if ($warranty.invalid -eq $true) {
+            write-host "Incorrect service tag provided. Please provide a valid service tag." -ForegroundColor Red
         } else {
-            if (-not ((Get-WmiObject Win32_ComputerSystem | Select-Object -ExpandProperty Manufacturer) -eq "Dell Inc.")) {
-                Write-Host "This script is only for Dell computers"
-                Exit
-            }
-            $serialNumber = Get-WmiObject Win32_BIOS | Select-Object -ExpandProperty SerialNumber
-            Get-DellWarranty -serviceTag $serialNumber
-            $warranty
+            return $warranty
+        }
+    } else {
+        write-host "Service Tag provided, fetching warranty information"
+        Get-DellWarranty -serviceTag $serviceTag
+        if ($warranty.invalid -eq $true) {
+            write-host "Incorrect service tag provided. Please provide a valid service tag." -ForegroundColor Red
+        } else {
+            return $warranty
         }
     }
 }
