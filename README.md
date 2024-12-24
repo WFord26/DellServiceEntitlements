@@ -4,12 +4,28 @@
 
 The `DellServiceEntitlements` PowerShell module provides cmdlets to interact with Dell's service entitlement API. This module allows users to retrieve warranty and service information for Dell devices.
 
+
+## Requirements
+
+This module requires the following:
+
+- PowerShell 5.1 or later
+- An API key and secret provided by Dell. You can obtain this on the [Dell Tech Direct](https://techdirect.dell.com/Portal/ApplyForAPIKeyWizard.aspx).
+- Internet connectivity to access Dell's service entitlement API.
+- Administrator privileges to install the module.
+
+
 ## Installation
 
-To install the `DellServiceEntitlements` module, run the following command:
+To install the `DellServiceEntitlements` module, follow these steps:
+
+1. Download the latest release from the [GitHub releases page](https://github.com/WFord26/DellServiceEntitlements/releases).
+2. Extract the downloaded file to a directory of your choice.
+3. Open PowerShell and navigate to the directory where you extracted the files.
+4. Run the following command from the file root to import the module:
 
 ```powershell
-Install-Module -Name DellServiceEntitlements
+Import-Module -Name .\DellServiceEntitlements.psm1
 ```
 
 ## Usage
@@ -19,33 +35,62 @@ Install-Module -Name DellServiceEntitlements
 Before using the cmdlets, import the module:
 
 ```powershell
-Import-Module DellServiceEntitlements
+Import-Module -name '/location/to/DellServiceEntitlements/DellServiceEntitlements/DellServiceEntitlements.psm1'
 ```
-
-### Retrieve Service Entitlements
-
-To retrieve service entitlements for a Dell device, use the `Get-DellServiceEntitlement` cmdlet:
-
-```powershell
-Get-DellServiceEntitlement -ServiceTag <ServiceTag>
-```
-
-Replace `<ServiceTag>` with the actual service tag of the Dell device.
 
 ## Cmdlets
 
-### Get-DellServiceEntitlement
+### Get-SerialNumber
 
-Retrieves the service entitlement information for a specified Dell device.
+Retrieves the Entitlement information depending on what parameters are passed to it. 
 
 #### Parameters
 
-- `-ServiceTag` (String): The service tag of the Dell device.
+- `-serviceTag` (String): The service tag of the Dell device.
+- `-csv` (Boolean): Are you providing a CSV file or not.
+- `-csvPath` (String): Location of the CSV file that you wish to run through. 
 
 #### Example
 
+**Searching for a specific service tag**
+
 ```powershell
-Get-DellServiceEntitlement -ServiceTag ABCD123
+Get-SerialNumber -serviceTag 673W6S3
+
+# Output
+
+
+```
+
+**Searching with system local service tag.** 
+
+``` PowerShell
+Get-SerialNumber
+
+# Output
+
+Service Tag provided, fetching warranty information
+
+
+id                     : 2003316121
+serviceTag             : 673W6S3
+orderBuid              : 11
+shipDate               : 2023-02-24T06:00:00Z
+productCode            : >/192
+localChannel           : 45
+productId              :
+productLineDescription : LATITUDE 5530
+productFamily          :
+systemDescription      :
+productLobDescription  : Latitude
+countryCode            : US
+duplicated             : False
+invalid                : False
+entitlements           : {@{itemNumber=997-8328; startDate=2023-02-24T06:00:00Z; endDate=2024-02-25T05:59:59.000001Z;
+                         entitlementType=INITIAL; serviceLevelCode=ND; serviceLevelDescription=Onsite Service After
+                         Remote Diagnosis (Consumer Customer)/ Next Business Day Onsite After Remote Diagnosis (for
+                         business Customer); serviceLevelGroup=5}}
+
 ```
 
 ## Contributing
