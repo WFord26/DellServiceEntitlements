@@ -26,7 +26,9 @@ function Grant-DellToken {
         $tokenUrl = "https://apigtwb2c.us.dell.com/auth/oauth/v2/token"  # Replace with your token endpoint
         $apiKey = $env:DELL_API_KEY
         $clientSecret = $env:DELL_CLIENT_SECRET
-
+        Write-Verbose "Starting the process to obtain Dell token"
+        Write-Verbose "API Key: $apiKey"
+        Write-Verbose "Client Secret: $clientSecret"
         if (-not $apiKey -or -not $clientSecret) {
             Write-Host "API key or client secret not found in environment variables." -ForegroundColor Red
             return
@@ -37,17 +39,28 @@ function Grant-DellToken {
             "client_id" = $apiKey
             "client_secret" = $clientSecret
         }
+
+        Write-Verbose "Auth body: $($authBody | Out-String)"
         $getTime = Get-Date
-        $authResponse = Invoke-RestMethod -Uri $tokenUrl -Method Post -Body $authBody -ContentType "application/x-www-form-urlencoded"
+        Write-Verbose "Request time: $getTime"
+
+        $authResponse = Invoke-RestMethod -Uri $tokenUrl -Method Post -Body $authBody -ContentType "application/x-www-form-urlencoded" -Verbose
+        Write-Verbose "Auth response: $($authResponse | Out-String)"
+
         $getExpires = $getTime.AddSeconds($authResponse.expires_in)
+        Write-Verbose "Token expiration time: $getExpires"
+
         $dellAuthToken = @{
             "token" = $authResponse.access_token
             "expires" = $getExpires
         }
+
         $dellAuthToken | Export-Clixml -Path "$env:USERPROFILE\.dell\dellAuthToken.xml"
         Write-Host "Token created successfully" -ForegroundColor Green
+        Write-Verbose "Token details saved to $env:USERPROFILE\.dell\dellAuthToken.xml"
     } catch {
         Write-Host "Error obtaining Dell token: $_" -ForegroundColor Red
+        Write-Verbose "Exception details: $_"
         exit
     }
 }
