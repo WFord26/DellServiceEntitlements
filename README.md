@@ -55,10 +55,40 @@ Retrieves the Entitlement information depending on what parameters are passed to
 **Searching for a specific service tag**
 
 ```powershell
-Get-SerialNumber -serviceTag 673W6S3
+Get-SerialNumber -serviceTag 24WPX42  
 
-# Output
+# Output                                                         
+Token has expired, creating new Auth Token
+Obtaining Dell token
+Token created successfully
+Service Tag provided, fetching warranty information
 
+id                     : 691565644
+serviceTag             : 24WPX42
+orderBuid              : 11
+shipDate               : 6/2/2015 5:00:00 AM
+productCode            : DQ006
+localChannel           : 08
+productId              : networking-n2000-series
+productLineDescription : DELL NETWORKING N-SERIES
+productFamily          : all-products/enterprise-products/networking-products/switches/managed-campus-switches
+systemDescription      : PowerSwitch N2000 Series
+productLobDescription  : Dell Networking
+countryCode            : US
+duplicated             : False
+invalid                : False
+entitlements           : {@{itemNumber=966-3157; startDate=6/2/2015 5:00:00 AM; endDate=6/3/2016 4:59:59 AM;
+                         entitlementType=INITIAL; serviceLevelCode=ND; serviceLevelDescription=Onsite Service After Remote  
+                         Diagnosis (Consumer Customer)/ Next Business Day Onsite After Remote Diagnosis (for business       
+                         Customer); serviceLevelGroup=5}, @{itemNumber=966-3183; startDate=6/2/2015 5:00:00 AM;
+                         endDate=6/3/2018 4:59:59 AM; entitlementType=INITIAL; serviceLevelCode=SV;
+                         serviceLevelDescription=Silver Support or ProSupport; serviceLevelGroup=8},
+                         @{itemNumber=966-3154; startDate=6/2/2015 5:00:00 AM; endDate=10/18/2042 5:59:59 AM;
+                         entitlementType=INITIAL; serviceLevelCode=LW; serviceLevelDescription=Limited Lifetime/Extended    
+                         Warranty; serviceLevelGroup=11}, @{itemNumber=966-3159; startDate=6/3/2016 5:00:00 AM;
+                         endDate=6/3/2018 4:59:59 AM; entitlementType=EXTENDED; serviceLevelCode=ND;
+                         serviceLevelDescription=Onsite Service After Remote Diagnosis (Consumer Customer)/ Next Business   
+                         Day Onsite After Remote Diagnosis (for business Customer); serviceLevelGroup=5}}
 
 ```
 
@@ -91,6 +121,24 @@ entitlements           : {@{itemNumber=997-8328; startDate=2023-02-24T06:00:00Z;
                          Remote Diagnosis (Consumer Customer)/ Next Business Day Onsite After Remote Diagnosis (for
                          business Customer); serviceLevelGroup=5}}
 
+```
+
+**Searching with a CSV**
+
+```PowerShell
+Get-ServiceEntitlements -csv -csvPath "C:\Temp\DellServiceTags.csv"
+Warranty information for service tags exported to: DellWarranty-2024-12-24-16.49.36.csv
+
+# If you don't provide a CSV
+
+Get-ServiceEntitlements -csv
+CSV file not found at path: Not Provided
+Would you like us to create a new CSV file? (Y/N)
+CSV template file created: $env:USERPROFILE\DellServiceTags.csv
+Please fill in the ServiceTag column with the service tags of the Dell computers you wish to query.
+Once complete, hit enter to continue.
+Press Enter to continue...:
+Warranty information for service tags exported to: DellWarranty-2024-12-24-16.49.36.csv
 ```
 
 ## Contributing
