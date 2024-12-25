@@ -141,6 +141,8 @@ Press Enter to continue...:
 Warranty information for service tags exported to: DellWarranty-2024-12-24-16.49.36.csv
 ```
 
+The CSV file requires a column named `ServiceTag`, if a CSV is not passed or passed with an incorrect table header it will create one and open it for the user to past the ServiceTag values.
+
 ## Contributing
 
 Contributions are welcome! Please submit a pull request or open an issue to discuss any changes.
