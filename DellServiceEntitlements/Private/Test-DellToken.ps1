@@ -22,18 +22,18 @@
 
 function Test-DellToken {
     Get-DellApiKey
-    $dellAuthTokenFile = "$env:USERPROFILE\.dell\dellAuthToken.xml"
+    $dellAuthTokenFile = "$($script:userPath)AuthToken.xml"
     if (-Not (Test-Path $dellAuthTokenFile)) {
-        Write-Host "Token does not exist, creating new Auth Token" -ForegroundColor Orange
+        Write-Host "Token does not exist, creating new Auth Token" -ForegroundColor Yellow
         Get-DellApiKey
         Grant-DellToken 
     } else {
             $dellAuthTokenImport = Import-Clixml -Path $dellAuthTokenFile
             if ($dellAuthTokenImport.expires -lt (Get-Date)) {
                 Write-Host "Token has expired, creating new Auth Token"
-                $credential = Import-SavedCredential -target "$env:USERPROFILE\.dell\apiCredential.xml"
-                $env:DELL_API_KEY = $credential.UserName
-                $env:DELL_CLIENT_SECRET = $credential.GetNetworkCredential().Password
+                $credential = Import-SavedCredential -target "$env:USERPATH"
+                $script:userClientKey= $credential.UserName
+                $script:userClientSecret = $credential.GetNetworkCredential().Password
                 Grant-DellToken
             } 
     }

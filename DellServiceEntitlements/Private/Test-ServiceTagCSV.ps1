@@ -1,7 +1,7 @@
 
 <#PSScriptInfo
 
-.VERSION 0.0.1
+.VERSION 0.0.2
 
 .GUID 8f2409f9-2bba-4b29-a9fb-1fcfc45f9e83
 
@@ -45,13 +45,14 @@ function Test-ServiceTagCSV {
         [Parameter(Mandatory = $true)]
         [string]$Path
     )
+    # Check if the CSV file exists
     $csvPath = $Path
     if ($csvPath -eq "Not Provided") {
         Write-Host "CSV file not found at path: $csvPath"
         Write-Host "Would you like us to create a new CSV file? (Y/N)"
         $createCsv = Read-Host
         if ($createCsv -eq "Y") {
-           New-DellTemplateCSV -Path $env:USERPROFILE\DellServiceTags.csv
+           New-DellTemplateCSV -Path $script:csvOutPath
         } else {
             Write-Host "Exiting script"
             Exit
@@ -65,7 +66,7 @@ function Test-ServiceTagCSV {
             Write-Host "Would you like us to create a new CSV file? (Y/N)"
             $createCsv = Read-Host
             if ($createCsv -eq "Y") {
-            New-DellTemplateCSV -Path $env:USERPROFILE\DellServiceTags.csv
+            New-DellTemplateCSV -Path $script:csvOutPath
             } else {
                 Write-Host "Exiting script"
                 Exit

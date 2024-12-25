@@ -5,6 +5,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- Added `Set-UserProfilePath.ps1` to set the user profile path based on the OS.
+- Added `Get-ServiceEntitlements.ps1` to retrieve the serial number and warranty information for Dell computers.
+
+### Updated
+- Updated `Get-DellApiKey.ps1` to set environment variables for API key and client secret.
+- Updated `Grant-DellToken.ps1` to save the token details to an XML file.
+- Updated `Test-DellToken.ps1` to check the validity of the Dell API authentication token and generate a new one if necessary.
+- Updated `Get-DellWarranty.ps1` to retrieve Dell warranty information for a given service tag.
+
 
 ## [0.2.0] - 2024-12-24
 ### Added

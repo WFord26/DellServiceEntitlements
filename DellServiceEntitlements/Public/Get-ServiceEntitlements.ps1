@@ -69,6 +69,8 @@ function Get-ServiceEntitlements{
         [string]$csvPath,
         [string]$serviceTag
     )
+    # Set the users profile path based on the OS
+    Set-UserProfilePath
     # Check if Token exists if it does not or has expired, create a new one
     Test-DellToken
     if ($csv) {
@@ -117,8 +119,8 @@ function Get-ServiceEntitlements{
             $warrantyLineItems += New-Object PSObject -Property $warrantyLineItem
         }
         # Export the warranty information to a CSV file
-        $warrantyLineItems | Export-Csv -Path "$env:USERPROFILE\DellWarranty-$($currentDateTime).csv" -Append -NoTypeInformation
-        Write-Host "Warranty information for service tags exported to: $($env:USERPROFILE)\DellWarranty-$($currentDateTime).csv" -ForegroundColor Green
+        $warrantyLineItems | Export-Csv -Path "$env:USERPATH\DellWarranty-$($currentDateTime).csv" -Append -NoTypeInformation
+        Write-Host "Warranty information for service tags exported to: $($env:USERPATH)\DellWarranty-$($currentDateTime).csv" -ForegroundColor Green
         # Clear the warranty object
         $script:warranty = $null
     } elseif (-not $serviceTag) {

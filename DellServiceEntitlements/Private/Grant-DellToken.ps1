@@ -24,8 +24,8 @@ function Grant-DellToken {
     try {
         Write-Host "Obtaining Dell token" -ForegroundColor Yellow
         $tokenUrl = "https://apigtwb2c.us.dell.com/auth/oauth/v2/token"  # Replace with your token endpoint
-        $apiKey = $env:DELL_API_KEY
-        $clientSecret = $env:DELL_CLIENT_SECRET
+        $apiKey = $script:userClientKey
+        $clientSecret = $script:userClientSecret
         Write-Verbose "Starting the process to obtain Dell token"
         Write-Verbose "API Key: $apiKey"
         Write-Verbose "Client Secret: $clientSecret"
@@ -54,10 +54,9 @@ function Grant-DellToken {
             "token" = $authResponse.access_token
             "expires" = $getExpires
         }
-
-        $dellAuthToken | Export-Clixml -Path "$env:USERPROFILE\.dell\dellAuthToken.xml"
+        $dellAuthToken | Export-Clixml -Path "$($script:userPath)dellAuthToken.xml"
         Write-Host "Token created successfully" -ForegroundColor Green
-        Write-Verbose "Token details saved to $env:USERPROFILE\.dell\dellAuthToken.xml"
+        Write-Verbose "Token details saved to $($script:userPath)dellAuthToken.xml"
     } catch {
         Write-Host "Error obtaining Dell token: $_" -ForegroundColor Red
         Write-Verbose "Exception details: $_"

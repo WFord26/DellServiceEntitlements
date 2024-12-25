@@ -21,7 +21,7 @@ function Get-DellWarranty {
     param (
         [string]$serviceTag
     )
-    $dellAuthToken = Import-Clixml -Path "$env:USERPROFILE\.dell\dellAuthToken.xml"
+    $dellAuthToken = Import-Clixml -Path "$($script:userPath)dellAuthToken.xml"
     $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
     $headers.Add("Authorization", "Bearer "+ $($dellAuthToken.token))
     $warrantyUrl = "https://apigtwb2c.us.dell.com/PROD/sbil/eapi/v5/asset-entitlements?servicetags="+$serviceTag
