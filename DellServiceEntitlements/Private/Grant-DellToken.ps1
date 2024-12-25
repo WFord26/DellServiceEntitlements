@@ -44,7 +44,7 @@ function Grant-DellToken {
         $getTime = Get-Date
         Write-Verbose "Request time: $getTime"
 
-        $authResponse = Invoke-RestMethod -Uri $tokenUrl -Method Post -Body $authBody -ContentType "application/x-www-form-urlencoded" -Verbose
+        $authResponse = Invoke-RestMethod -Uri $tokenUrl -Method Post -Body $authBody -ContentType "application/x-www-form-urlencoded"
         Write-Verbose "Auth response: $($authResponse | Out-String)"
 
         $getExpires = $getTime.AddSeconds($authResponse.expires_in)
