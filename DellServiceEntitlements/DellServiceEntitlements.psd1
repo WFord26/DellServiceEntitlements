@@ -3,7 +3,7 @@
     RootModule = 'Get-DellServiceEntitlements.psm1'
 
     # Version number of this module.
-    ModuleVersion = '0.1.0'
+    ModuleVersion = '0.2.0'
 
     # ID used to uniquely identify this module
     GUID = '16ae8a67-ac4d-4202-9563-348d08fc3ebb'
