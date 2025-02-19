@@ -21,14 +21,19 @@
 
 #>
 function Grant-DellToken {
+    [CmdletBinding()]
+    param()
+    
     try {
         Write-Host "Obtaining Dell token" -ForegroundColor Yellow
-        $tokenUrl = "https://apigtwb2c.us.dell.com/auth/oauth/v2/token"  # Replace with your token endpoint
+        $tokenUrl = "https://apigtwb2c.us.dell.com/auth/oauth/v2/token"
         $apiKey = $script:userClientKey
         $clientSecret = $script:userClientSecret
+        
         Write-Verbose "Starting the process to obtain Dell token"
         Write-Verbose "API Key: $apiKey"
         Write-Verbose "Client Secret: $clientSecret"
+        
         if (-not $apiKey -or -not $clientSecret) {
             Write-Host "API key or client secret not found in environment variables." -ForegroundColor Red
             return
@@ -50,16 +55,25 @@ function Grant-DellToken {
         $getExpires = $getTime.AddSeconds($authResponse.expires_in)
         Write-Verbose "Token expiration time: $getExpires"
 
-        $dellAuthToken = @{
+        # Set the script-level variable
+        $script:dellAuthToken = @{
             "token" = $authResponse.access_token
             "expires" = $getExpires
         }
-        $dellAuthToken | Export-Clixml -Path "$($script:userPath)dellAuthToken.xml"
+
+        # If not using Key Vault, save to local file
+        if (-not $UseKeyVault) {
+            $script:dellAuthToken | Export-Clixml -Path "$($script:userPath)dellAuthToken.xml"
+        }
+        
         Write-Host "Token created successfully" -ForegroundColor Green
-        Write-Verbose "Token details saved to $($script:userPath)dellAuthToken.xml"
-    } catch {
+        Write-Verbose "Token details saved successfully"
+        
+        return $script:dellAuthToken
+    }
+    catch {
         Write-Host "Error obtaining Dell token: $_" -ForegroundColor Red
         Write-Verbose "Exception details: $_"
-        exit
+        return $null
     }
 }
