@@ -78,6 +78,13 @@ function Get-ServiceEntitlements{
         if (-not $csvPath){
             $csvPath = "Not Provided"
         }
+
+        # Check if UNIX or Windows path
+        if ($env:OS -eq "Windows_NT") {
+            $logPath = "$($env:USERPROFILE)\"
+        } else {
+            $logPath = "$($env:HOME)/"
+        }
         # Test the CSV file exists and to ensure that it contains a ServiceTag column
         Test-ServiceTagCSV -Path $csvPath
         # Get the current date and time for logging purposes
@@ -119,8 +126,8 @@ function Get-ServiceEntitlements{
             $warrantyLineItems += New-Object PSObject -Property $warrantyLineItem
         }
         # Export the warranty information to a CSV file
-        $warrantyLineItems | Export-Csv -Path "$env:USERPATH\DellWarranty-$($currentDateTime).csv" -Append -NoTypeInformation
-        Write-Host "Warranty information for service tags exported to: $($env:USERPATH)\DellWarranty-$($currentDateTime).csv" -ForegroundColor Green
+        $warrantyLineItems | Export-Csv -Path "$($logPath)DellWarranty-$($currentDateTime).csv" -Append -NoTypeInformation
+        Write-Host "Warranty information for service tags exported to: $($logPath)DellWarranty-$($currentDateTime).csv" -ForegroundColor Green
         # Clear the warranty object
         $script:warranty = $null
     } elseif (-not $serviceTag) {
