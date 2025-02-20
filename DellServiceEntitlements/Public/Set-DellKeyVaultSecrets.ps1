@@ -1,10 +1,13 @@
-# Set-DellKeyVaultSecrets.ps1
-
 function Set-DellKeyVaultSecrets {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory = $true)]
         [string]$KeyVaultName,
+
+    # Check PowerShell version first
+    if (-not (Test-PowerShellVersion)) {
+        return
+    }
         [Parameter(Mandatory = $false)]
         [string]$ApiKeySecretName = "DellApiKey",
         [Parameter(Mandatory = $false)]

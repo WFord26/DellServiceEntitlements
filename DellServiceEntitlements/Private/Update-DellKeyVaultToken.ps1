@@ -1,6 +1,5 @@
 # Update-DellKeyVaultToken.ps1
 
-
 function Update-DellKeyVaultToken {
     [CmdletBinding()]
     param (
