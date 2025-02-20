@@ -28,7 +28,12 @@ To install the `DellServiceEntitlements` module, follow these steps:
 Install-Module -Name Az -Scope CurrentUser
 ```
 4. Open PowerShell and navigate to the directory where you extracted the files
-5. Run the following command from the file root to import the module:
+5. Import Azure PowerShell modules (if using key Vault):
+```powershell
+Import-Module -name Az.Accounts
+Import-Module -name Az.Keyvault
+```
+6. Run the following command from the file root to import the module:
 ```powershell
 Import-Module -Name .\DellServiceEntitlements.psm1
 ```
