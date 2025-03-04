@@ -8,7 +8,8 @@ The `DellServiceEntitlements` PowerShell module provides cmdlets to interact wit
 
 This module requires the following:
 
-- PowerShell 5.1 or later
+- PowerShell 5.1 or later for basic functionality
+- PowerShell 7.0 or later for Azure Key Vault integration
 - An API key and secret provided by Dell. You can obtain this on the [Dell Tech Direct](https://techdirect.dell.com/Portal/ApplyForAPIKeyWizard.aspx)
 - Internet connectivity to access Dell's service entitlement API
 - Administrator privileges to install the module
@@ -28,12 +29,7 @@ To install the `DellServiceEntitlements` module, follow these steps:
 Install-Module -Name Az -Scope CurrentUser
 ```
 4. Open PowerShell and navigate to the directory where you extracted the files
-5. Import Azure PowerShell modules (if using key Vault):
-```powershell
-Import-Module -name Az.Accounts
-Import-Module -name Az.Keyvault
-```
-6. Run the following command from the file root to import the module:
+5. Run the following command from the file root to import the module:
 ```powershell
 Import-Module -Name .\DellServiceEntitlements.psm1
 ```
@@ -60,6 +56,18 @@ Set-DellKeyVaultSecrets -KeyVaultName "YourKeyVaultName"
 2. Or import existing credentials to Key Vault:
 ```powershell
 Set-DellKeyVaultSecrets -KeyVaultName "YourKeyVaultName" -UseExistingCredentials
+```
+
+3. Export Key Vault credentials to local storage:
+```powershell
+# Export to default location (\.dell\apiCredential.xml)
+Export-DellKeyVaultToXml -KeyVaultName "YourKeyVaultName"
+
+# Export to specific location
+Export-DellKeyVaultToXml -KeyVaultName "YourKeyVaultName" -OutputPath "C:\path\to\credentials.xml"
+
+# Force overwrite of existing file
+Export-DellKeyVaultToXml -KeyVaultName "YourKeyVaultName" -Force
 ```
 
 ## Cmdlets
@@ -126,6 +134,21 @@ Retrieves Dell API credentials from Azure Key Vault.
 
 ```powershell
 Get-DellKeyVaultSecrets -KeyVaultName "YourKeyVault"
+```
+
+#### Export-DellKeyVaultToXml
+Exports Dell API credentials from Azure Key Vault to local XML storage.
+
+```powershell
+# Export to default location
+Export-DellKeyVaultToXml -KeyVaultName "YourKeyVault"
+
+# Export with custom settings
+Export-DellKeyVaultToXml -KeyVaultName "YourKeyVault" `
+    -OutputPath "C:\path\to\credentials.xml" `
+    -ApiKeySecretName "CustomApiKey" `
+    -ClientSecretName "CustomClientSecret" `
+    -Force
 ```
 
 ## CSV File Format
