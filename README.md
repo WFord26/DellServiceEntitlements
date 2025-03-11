@@ -116,6 +116,56 @@ Get-ServiceEntitlements -csv -csvPath "C:\Temp\DellServiceTags.csv"
 Get-ServiceEntitlements -serviceTag "24WPX42" -UseKeyVault -KeyVaultName "MyKeyVault"
 ```
 
+**Sample Outputs**
+
+```powershell
+PS C:\Users\wford.MS> Get-ServiceEntitlements -serviceTag 4J9CXC2
+Token has expired, creating new Auth Token
+Obtaining Dell token
+Token created successfully
+
+Name                           Value
+----                           -----
+token                          8851e5af-707b-42aa-a07f-fc352138ca55-1741733981
+expires                        3/11/2025 4:59:41 PM
+Service Tag provided, fetching warranty information
+Country                        US
+Start Date                     2/26/2018 6:00:00 AM
+ID                             885080438
+ServiceTag                     4J9CXC2
+Product                        Dell Networking
+System Type                    PowerSwitch N2000 Series
+-------- Entitlement (1) --------
+Warranty Type                  INITIAL
+Service Level                  Next Business Day Parts Support
+Start Date                     2/26/2018 6:00:00 AM
+End Date                       3/10/2019 5:59:59 AM
+-------- Entitlement (2) --------
+Warranty Type                  INITIAL
+Service Level                  Limited Lifetime/Extended Warranty
+Start Date                     2/26/2018 6:00:00 AM
+End Date                       3/10/2045 5:59:59 AM
+
+
+PS C:\Users\wford.MS> Get-ServiceEntitlements
+Service Tag not provided, attempting to retrieve from local machine
+
+Name                           Value
+----                           -----
+Country                        US
+Start Date                     2/24/2023 6:00:00 AM
+ID                             2003316121
+ServiceTag                     673W6S3
+Product                        Latitude
+System Type
+-------- Entitlement (1) --------
+Warranty Type                  INITIAL
+Service Level                  Onsite Service After Remote Diagnosis (Consumer Customer)/ Next Business Day Onsite Aft…
+Start Date                     2/24/2023 6:00:00 AM
+End Date                       2/25/2024 5:59:59 AM
+
+```
+
 ### Set-DellKeyVaultSecrets
 
 Stores Dell API credentials in Azure Key Vault.

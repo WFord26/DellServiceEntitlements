@@ -208,7 +208,6 @@ function Get-ServiceEntitlements {
                         'Service Level' = $script:warranty.entitlements[$i].serviceLevelDescription
                         'Warranty Type' = $script:warranty.entitlements[$i].entitlementType
                     }
-                    $entitlements += "-------- Entitlement ($($i + 1)) --------"
                     $entitlements += $entitlement
                     $i++
                 }
