@@ -6,6 +6,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.1] - 2025-03-11
+### Updated
+- Improved authentication token management with automatic renewal
+- Optimized CSV processing for large datasets
+- Updated documentation with performance tuning recommendations
+
+### Fixed
+- Fixed thread safety issues in token refresh operations
+- Addressed authentication context sharing in parallel operations
+- Improved error handling for network timeouts and transient failures
+- Enhanced reliability of credential storage access
+
 ## [0.4.0] - 2025-03-11
 ### Added
 - Added `Set-UserProfilePath.ps1` to set the user profile path based on the OS.
