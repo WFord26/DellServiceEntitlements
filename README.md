@@ -89,6 +89,7 @@ Retrieves warranty and service information for Dell devices.
 - `-ApiKeySecretName` (String): The name of the secret in Key Vault that stores the Dell API Key.
 - `-ClientSecretName` (String): The name of the secret in Key Vault that stores the Dell Client Secret.
 - `-AuthTokenSecretName` (String): The name of the secret in Key Vault that stores the Dell Auth Token.
+- `-passThrough` (Switch): Are you passing this command through to another script.
 
 #### Examples
 
@@ -115,6 +116,12 @@ Get-ServiceEntitlements -csv -csvPath "C:\Temp\DellServiceTags.csv"
 ```powershell
 Get-ServiceEntitlements -serviceTag "24WPX42" -UseKeyVault -KeyVaultName "MyKeyVault"
 ```
+
+**Passthrough**
+```powershell
+Get-ServiceEntitlements -passThrough\
+```
+
 
 **Sample Outputs**
 
@@ -163,6 +170,30 @@ Warranty Type                  INITIAL
 Service Level                  Onsite Service After Remote Diagnosis (Consumer Customer)/ Next Business Day Onsite Aft…
 Start Date                     2/24/2023 6:00:00 AM
 End Date                       2/25/2024 5:59:59 AM
+
+
+
+PS C:\Users\wford.MS> Get-ServiceEntitlements -passThrough
+Service Tag not provided, attempting to retrieve from local machine
+
+id                     : 2003316121
+serviceTag             : 673W6S3
+orderBuid              : 11
+shipDate               : 2/24/2023 6:00:00 AM
+productCode            : >/192
+localChannel           : 45
+productId              :
+productLineDescription : LATITUDE 5530
+productFamily          :
+systemDescription      :
+productLobDescription  : Latitude
+countryCode            : US
+duplicated             : False
+invalid                : False
+entitlements           : {@{itemNumber=997-8328; startDate=2/24/2023 6:00:00 AM; endDate=2/25/2024 5:59:59 AM;
+                         entitlementType=INITIAL; serviceLevelCode=ND; serviceLevelDescription=Onsite Service After
+                         Remote Diagnosis (Consumer Customer)/ Next Business Day Onsite After Remote Diagnosis (for
+                         business Customer); serviceLevelGroup=5}}
 
 ```
 
