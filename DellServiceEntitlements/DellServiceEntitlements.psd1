@@ -1,6 +1,6 @@
 @{
     # Script module or binary module file associated with this manifest.
-    RootModule = 'Get-DellServiceEntitlements.psm1'
+    RootModule = 'DellServiceEntitlements.psm1'
 
     # Version number of this module.
     ModuleVersion = '0.2.0'
@@ -16,17 +16,10 @@
 
     # Description of the functionality provided by this module
     Description = 'A module to retrieve Dell service entitlements and update ConnectWise Manage configurations.'
-
+    
     # Functions to export from this module
     FunctionsToExport = @(
-        'Grant-DellToken',
-        'Get-DellApiKeys',
-        'Save-DellCredential',
-        'Import-SavedCredential',
-        'Test-DellToken',
-        'Get-DellWarranty',
-        'Get-SerialNumber',
-        'Get-DellApiKey'
+        'Get-ServiceEntitlements'
     )
 
     # Cmdlets to export from this module
