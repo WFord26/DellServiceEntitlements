@@ -60,22 +60,7 @@
 
             # ReleaseNotes of this module
             ReleaseNotes = '
-            Version 0.3.0:
-            - Added Azure Key Vault integration for secure credential storage (requires PowerShell 7.0+)
-            - Added new functions for Key Vault operations
-            - Added Key Vault support to existing functions
-            - Improved token management and error handling
-            - Added Export-DellKeyVaultToXml function
-            
-            Version 0.2.0:
-            - Added metadata properties
-            - Added CSV file handling
-            - Improved error handling
-            
-            Version 0.1.0:
-            - Initial release
-            - Basic Dell warranty lookup functionality
-            - Local credential management
+            See the CHANGELOG.md file for a list of changes in each version.
             '
 
             # External dependent modules of this module

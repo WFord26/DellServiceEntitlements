@@ -78,6 +78,7 @@ function Get-ServiceEntitlements {
     [CmdletBinding()]
     param (
         [switch]$csv,
+        [switch]$passThrough,
         [string]$csvPath,
         [string]$serviceTag,
         [switch]$UseKeyVault,
@@ -192,7 +193,46 @@ function Get-ServiceEntitlements {
         if ($script:warranty.invalid -eq $true) {
             Write-Host "Incorrect service tag provided. Please provide a valid service tag." -ForegroundColor Red
         } else {
-            return $warranty
+            if ($passThrough){
+                return $script:warranty
+            } else {
+                # Break out the entitlements output
+                $entitlements = @()
+                $entitlementCount = $script:warranty.entitlements.Count - 1
+                $i = 0
+                
+                while ($i -le $entitlementCount) {
+                    $entitlement = @{
+                        'Start Date' = $script:warranty.entitlements[$i].startDate
+                        'End Date' = $script:warranty.entitlements[$i].endDate
+                        'Service Level' = $script:warranty.entitlements[$i].serviceLevelDescription
+                        'Warranty Type' = $script:warranty.entitlements[$i].entitlementType
+                    }
+                    $entitlements += "-------- Entitlement ($($i + 1)) --------"
+                    $entitlements += $entitlement
+                    $i++
+                }
+
+                # Create a custom object with the warranty information
+                $warrantyInfo = @{
+                    "ServiceTag" = $script:warranty.serviceTag
+                    "ID" = $script:warranty.id
+                    "Country" = $script:warranty.countryCode
+                    "Product" = $script:warranty.productLobDescription
+                    "System Type" = $script:warranty.systemDescription
+                    "Start Date" = $script:warranty.shipDate
+                }
+
+                # Output the warranty information
+                $warrantyInfo
+                $i=0
+                foreach ($entitlement in $entitlements){
+                    $i++
+                    Write-Host "-------- Entitlement ($($i)) --------" -ForegroundColor Green
+                    $entitlement
+                }
+            }
+           
         }
     } else {
         Write-Host "Service Tag provided, fetching warranty information"
@@ -206,7 +246,44 @@ function Get-ServiceEntitlements {
         if ($script:warranty.invalid -eq $true) {
             Write-Host "Incorrect service tag provided. Please provide a valid service tag." -ForegroundColor Red
         } else {
-            return $warranty
+            if ($passThrough){
+                return $script:warranty
+            } else {
+                # Break out the entitlements output
+                $entitlements = @()
+                $entitlementCount = $script:warranty.entitlements.Count - 1
+                $i = 0
+                
+                while ($i -le $entitlementCount) {
+                    $entitlement = @{
+                        'Start Date' = $script:warranty.entitlements[$i].startDate
+                        'End Date' = $script:warranty.entitlements[$i].endDate
+                        'Service Level' = $script:warranty.entitlements[$i].serviceLevelDescription
+                        'Warranty Type' = $script:warranty.entitlements[$i].entitlementType
+                    }
+                    $entitlements += $entitlement
+                    $i++
+                }
+
+                # Create a custom object with the warranty information
+                $warrantyInfo = @{
+                    "ServiceTag" = $script:warranty.serviceTag
+                    "ID" = $script:warranty.id
+                    "Country" = $script:warranty.countryCode
+                    "Product" = $script:warranty.productLobDescription
+                    "System Type" = $script:warranty.systemDescription
+                    "Start Date" = $script:warranty.shipDate
+                }
+
+                # Output the warranty information
+                $warrantyInfo
+                $i=0
+                foreach ($entitlement in $entitlements){
+                    $i++
+                    Write-Host "-------- Entitlement ($($i)) --------" -ForegroundColor Green
+                    $entitlement
+                }
+            }
         }
     }
 }
