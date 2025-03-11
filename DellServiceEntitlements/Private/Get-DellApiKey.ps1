@@ -28,25 +28,48 @@ If 'Import-SavedCredential' is not available, an error is thrown.
 function Get-DellApiKey {
     [CmdletBinding()]
     param (
-        [string]$xmlFile = "$($script:userPath)apiCredential.xml"
+        [string]$xmlFile = "$($script:userPath)apiCredential.xml",
+        [switch]$UseKeyVault,
+        [string]$KeyVaultName,
+        [string]$ApiKeySecretName = "DellApiKey",
+        [string]$ClientSecretName = "DellClientSecret"
     )
-    Write-Verbose "Checking for credential file at: $xmlFile"
-    if (-Not (Test-Path $xmlFile)) {
-        Write-Host "Credential file not found. Please enter your API Key and Secret."
-        $userClientId = Read-Host "Enter API Key"
-        $userClientSecret = Read-Host "Enter Client Secret" -AsSecureString
-        Save-DellCredential -target $xmlFile -username $userClientId -password $userClientSecret
-        # Set the environment variables
-        $script:userClientKey = $userClientId
-        $script:userClientSecret = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($userClientSecret))
-    } else {
-        if (-Not (Get-Command -Name Import-SavedCredential -ErrorAction SilentlyContinue)) {
-            Write-Error "The function 'Import-SavedCredential' is not defined. Please ensure it is available."
+
+    Write-Verbose "Checking for credentials..."
+
+    if ($UseKeyVault) {
+        if (-not $KeyVaultName) {
+            Write-Error "KeyVaultName is required when using Azure Key Vault"
             return
         }
-        $credential = Import-SavedCredential -target $xmlFile
-        # Set the environment variables
-        $script:userClientKey = $credential.UserName
-        $script:userClientSecret = $credential.GetNetworkCredential().Password
+
+        $credentials = Get-DellKeyVaultSecrets -KeyVaultName $KeyVaultName -ApiKeySecretName $ApiKeySecretName -ClientSecretName $ClientSecretName
+        if ($credentials) {
+            $script:userClientKey = $credentials.ApiKey
+            $script:userClientSecret = $credentials.ClientSecret
+            return
+        }
+    }
+    else {
+        Write-Verbose "Checking for credential file at: $xmlFile"
+        if (-Not (Test-Path $xmlFile)) {
+            Write-Host "Credential file not found. Please enter your API Key and Secret."
+            $userClientId = Read-Host "Enter API Key"
+            $userClientSecret = Read-Host "Enter Client Secret" -AsSecureString
+            Save-DellCredential -target $xmlFile -username $userClientId -password $userClientSecret
+            # Set the environment variables
+            $script:userClientKey = $userClientId
+            $script:userClientSecret = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($userClientSecret))
+        }
+        else {
+            if (-Not (Get-Command -Name Import-SavedCredential -ErrorAction SilentlyContinue)) {
+                Write-Error "The function 'Import-SavedCredential' is not defined. Please ensure it is available."
+                return
+            }
+            $credential = Import-SavedCredential -target $xmlFile
+            # Set the environment variables
+            $script:userClientKey = $credential.UserName
+            $script:userClientSecret = $credential.GetNetworkCredential().Password
+        }
     }
 }
