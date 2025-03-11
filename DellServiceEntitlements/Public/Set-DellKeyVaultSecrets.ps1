@@ -3,74 +3,82 @@ function Set-DellKeyVaultSecrets {
     param (
         [Parameter(Mandatory = $true)]
         [string]$KeyVaultName,
-
-    # Check PowerShell version first
-    if (-not (Test-PowerShellVersion)) {
-        return
-    }
+        
+        [Parameter(Mandatory = $true)]
+        [string]$ClientId,
+        
+        [Parameter(Mandatory = $true)]
+        [string]$ClientSecret,
+        
         [Parameter(Mandatory = $false)]
         [string]$ApiKeySecretName = "DellApiKey",
+        
+        [Parameter(Mandatory = $false)]
+        [string]$ClientIdSecretName = "DellClientId",
+        
         [Parameter(Mandatory = $false)]
         [string]$ClientSecretName = "DellClientSecret",
+        
         [Parameter(Mandatory = $false)]
-        [string]$AuthTokenSecretName = "DellAuthToken",
-        [Parameter(Mandatory = $false)]
-        [switch]$UseExistingCredentials
+        [switch]$Force
     )
 
+    # Verify Az.KeyVault module is available
+    if (-not (Get-Module -ListAvailable -Name Az.KeyVault)) {
+        Write-Error "The Az.KeyVault module is required. Please install it using: Install-Module -Name Az.KeyVault -Force"
+        return
+    }
+
+    # Check if user is connected to Azure
     try {
-        # Verify Azure PowerShell modules are installed
-        if (-not (Get-Module -ListAvailable Az.Accounts)) {
-            Write-Error "Azure PowerShell modules not found. Please install using: Install-Module -Name Az -Scope CurrentUser"
-            return
-        }
-
-        # Connect to Azure if not already connected
-        $context = Get-AzContext
+        $context = Get-AzContext -ErrorAction Stop
         if (-not $context) {
-            Connect-AzAccount
-        }
-
-        # Verify access to Key Vault
-        try {
-            Get-AzKeyVault -VaultName $KeyVaultName -ErrorAction Stop
-        }
-        catch {
-            Write-Error "Unable to access Key Vault '$KeyVaultName'. Please verify the name and your permissions."
+            Write-Error "You are not connected to Azure. Please run Connect-AzAccount first."
             return
         }
+    }
+    catch {
+        Write-Error "Error checking Azure connection: $_"
+        Write-Error "Please run Connect-AzAccount to connect to Azure."
+        return
+    }
 
-        if ($UseExistingCredentials) {
-            # Import existing credentials from XML file
-            $xmlPath = "$($script:userPath)apiCredential.xml"
-            if (Test-Path $xmlPath) {
-                $credential = Import-SavedCredential -target $xmlPath
-                $apiKey = $credential.UserName
-                $clientSecret = $credential.GetNetworkCredential().Password
-            }
-            else {
-                Write-Error "No existing credentials found at $xmlPath"
-                return
-            }
+    # Check if the Key Vault exists
+    try {
+        $keyVault = Get-AzKeyVault -VaultName $KeyVaultName -ErrorAction Stop
+        if (-not $keyVault) {
+            Write-Error "Key Vault '$KeyVaultName' not found."
+            return
+        }
+    }
+    catch {
+        Write-Error "Error accessing Key Vault '$KeyVaultName': $_"
+        return
+    }
+
+    # Set secrets in Key Vault
+    try {
+        # Set the Client ID secret
+        $existingClientIdSecret = Get-AzKeyVaultSecret -VaultName $KeyVaultName -Name $ClientIdSecretName -ErrorAction SilentlyContinue
+        if ($existingClientIdSecret -and -not $Force) {
+            Write-Warning "Secret '$ClientIdSecretName' already exists in '$KeyVaultName'. Use -Force to overwrite."
         }
         else {
-            # Prompt for new credentials
-            $apiKey = Read-Host "Enter Dell API Key"
-            $clientSecret = Read-Host "Enter Dell Client Secret" -AsSecureString
-            $clientSecret = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto(
-                [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($clientSecret)
-            )
+            $clientIdSecureString = ConvertTo-SecureString -String $ClientId -AsPlainText -Force
+            Set-AzKeyVaultSecret -VaultName $KeyVaultName -Name $ClientIdSecretName -SecretValue $clientIdSecureString | Out-Null
+            Write-Output "Successfully stored Client ID as secret '$ClientIdSecretName' in Key Vault '$KeyVaultName'."
         }
 
-        # Store API Key
-        $apiKeySecure = ConvertTo-SecureString $apiKey -AsPlainText -Force
-        Set-AzKeyVaultSecret -VaultName $KeyVaultName -Name $ApiKeySecretName -SecretValue $apiKeySecure
-
-        # Store Client Secret
-        $clientSecretSecure = ConvertTo-SecureString $clientSecret -AsPlainText -Force
-        Set-AzKeyVaultSecret -VaultName $KeyVaultName -Name $ClientSecretName -SecretValue $clientSecretSecure
-
-        Write-Host "Successfully stored Dell API credentials in Azure Key Vault" -ForegroundColor Green
+        # Set the Client Secret
+        $existingClientSecret = Get-AzKeyVaultSecret -VaultName $KeyVaultName -Name $ClientSecretName -ErrorAction SilentlyContinue
+        if ($existingClientSecret -and -not $Force) {
+            Write-Warning "Secret '$ClientSecretName' already exists in '$KeyVaultName'. Use -Force to overwrite."
+        }
+        else {
+            $clientSecretSecureString = ConvertTo-SecureString -String $ClientSecret -AsPlainText -Force
+            Set-AzKeyVaultSecret -VaultName $KeyVaultName -Name $ClientSecretName -SecretValue $clientSecretSecureString | Out-Null
+            Write-Output "Successfully stored Client Secret as secret '$ClientSecretName' in Key Vault '$KeyVaultName'."
+        }
     }
     catch {
         Write-Error "Error storing secrets in Key Vault: $_"

@@ -2,36 +2,38 @@
 
 ## Overview
 
-The `DellServiceEntitlements` PowerShell module provides cmdlets to interact with Dell's service entitlement API. This module allows users to retrieve warranty and service information for Dell devices. It supports both local credential storage and Azure Key Vault integration for secure credential management in enterprise environments.
+The `DellServiceEntitlements` PowerShell module provides cmdlets to interact with Dell's service entitlement API. This module allows users to retrieve warranty and service information for Dell devices.
+
+## Features
+
+- Retrieve warranty and service information for Dell devices using service tags
+- Process multiple service tags via CSV file
+- Automatically detect service tags from local Dell systems
+- Securely store and manage Dell API credentials
+- Support for both local credential storage and Azure Key Vault integration
+- Cross-platform support (Windows, Linux, macOS)
 
 ## Requirements
 
 This module requires the following:
 
-- PowerShell 5.1 or later for basic functionality
-- PowerShell 7.0 or later for Azure Key Vault integration
-- An API key and secret provided by Dell. You can obtain this on the [Dell Tech Direct](https://techdirect.dell.com/Portal/ApplyForAPIKeyWizard.aspx)
-- Internet connectivity to access Dell's service entitlement API
-- Administrator privileges to install the module
-- For Azure Key Vault functionality:
-  - Azure PowerShell module (`Az`) installed
-  - Access to an Azure Key Vault
-  - Appropriate Azure permissions (Key Vault Secrets Officer or equivalent)
+- PowerShell 5.1 or later (PowerShell 7.0+ recommended for Azure Key Vault integration)
+- An API key and secret provided by Dell. You can obtain this on the [Dell Tech Direct](https://techdirect.dell.com/Portal/ApplyForAPIKeyWizard.aspx).
+- Internet connectivity to access Dell's service entitlement API.
+- Administrator privileges to install the module.
+- (Optional) Azure PowerShell modules for Key Vault integration
 
 ## Installation
 
 To install the `DellServiceEntitlements` module, follow these steps:
 
-1. Download the latest release from the [GitHub releases page](https://github.com/WFord26/DellServiceEntitlements/releases)
-2. Extract the downloaded file to a directory of your choice
-3. Install required Azure PowerShell modules (if using Key Vault):
+1. Download the latest release from the [GitHub releases page](https://github.com/WFord26/DellServiceEntitlements/releases).
+2. Extract the downloaded file to a directory of your choice.
+3. Open PowerShell and navigate to the directory where you extracted the files.
+4. Run the following command from the file root to import the module:
+
 ```powershell
-Install-Module -Name Az -Scope CurrentUser
-```
-4. Open PowerShell and navigate to the directory where you extracted the files
-5. Run the following command from the file root to import the module:
-```powershell
-Import-Module -Name .\DellServiceEntitlements.psm1
+Import-Module -Name .\DellServiceEntitlements.psd1
 ```
 
 ## Usage
@@ -41,127 +43,139 @@ Import-Module -Name .\DellServiceEntitlements.psm1
 Before using the cmdlets, import the module:
 
 ```powershell
-Import-Module -name '/location/to/DellServiceEntitlements/DellServiceEntitlements/DellServiceEntitlements.psm1'
+Import-Module -name '/location/to/DellServiceEntitlements/DellServiceEntitlements/DellServiceEntitlements.psd1'
 ```
 
-### Configure Azure Key Vault (Optional)
+## Authentication Methods
 
-If you want to use Azure Key Vault for credential storage:
+The module supports two authentication methods:
 
-1. Store your Dell API credentials in Key Vault:
+1. **Local Credential Storage**: Credentials are stored securely in XML files on the local system
+2. **Azure Key Vault Integration**: Credentials are stored and managed securely in Azure Key Vault (recommended for enterprise environments)
+
+### Setting up Azure Key Vault Integration
+
+1. Install the required Azure PowerShell modules:
+
 ```powershell
-Set-DellKeyVaultSecrets -KeyVaultName "YourKeyVaultName"
+Install-Module -Name Az.Accounts, Az.KeyVault -Force
 ```
 
-2. Or import existing credentials to Key Vault:
+2. Connect to your Azure account:
+
 ```powershell
-Set-DellKeyVaultSecrets -KeyVaultName "YourKeyVaultName" -UseExistingCredentials
+Connect-AzAccount
 ```
 
-3. Export Key Vault credentials to local storage:
+3. Store your Dell API credentials in Key Vault:
+
 ```powershell
-# Export to default location (\.dell\apiCredential.xml)
-Export-DellKeyVaultToXml -KeyVaultName "YourKeyVaultName"
-
-# Export to specific location
-Export-DellKeyVaultToXml -KeyVaultName "YourKeyVaultName" -OutputPath "C:\path\to\credentials.xml"
-
-# Force overwrite of existing file
-Export-DellKeyVaultToXml -KeyVaultName "YourKeyVaultName" -Force
+Set-DellKeyVaultSecrets -KeyVaultName "YourKeyVaultName" -ClientId "YourClientId" -ClientSecret "YourClientSecret"
 ```
 
 ## Cmdlets
 
 ### Get-ServiceEntitlements
 
-Retrieves the Entitlement information depending on what parameters are passed to it. 
+Retrieves warranty and service information for Dell devices.
 
 #### Parameters
 
-- `-serviceTag` (String): The service tag of the Dell device
-- `-csv` (Boolean): Are you providing a CSV file or not
-- `-csvPath` (String): Location of the CSV file that you wish to run through
-- `-UseKeyVault` (Switch): Use Azure Key Vault for credential storage
-- `-KeyVaultName` (String): Name of the Azure Key Vault
-- `-ApiKeySecretName` (String): Optional. Name of API Key secret in Key Vault (default: "DellApiKey")
-- `-ClientSecretName` (String): Optional. Name of Client Secret in Key Vault (default: "DellClientSecret")
-- `-AuthTokenSecretName` (String): Optional. Name of Auth Token secret in Key Vault (default: "DellAuthToken")
+- `-serviceTag` (String): The service tag of the Dell device.
+- `-csv` (Boolean): Indicates that a CSV file containing service tags will be processed.
+- `-csvPath` (String): Location of the CSV file that you wish to run through.
+- `-UseKeyVault` (Switch): Indicates that Azure Key Vault should be used for credential storage.
+- `-KeyVaultName` (String): The name of the Azure Key Vault where Dell API credentials are stored.
+- `-ApiKeySecretName` (String): The name of the secret in Key Vault that stores the Dell API Key.
+- `-ClientSecretName` (String): The name of the secret in Key Vault that stores the Dell Client Secret.
+- `-AuthTokenSecretName` (String): The name of the secret in Key Vault that stores the Dell Auth Token.
 
 #### Examples
 
-**Using Local Storage:**
+**Query the local Dell system**
 
 ```powershell
-# Searching for a specific service tag
-Get-ServiceEntitlements -serviceTag 24WPX42  
-
-# Searching with system local service tag
 Get-ServiceEntitlements
+```
 
-# Searching with a CSV
+**Query a specific service tag**
+
+```powershell
+Get-ServiceEntitlements -serviceTag "24WPX42"
+```
+
+**Process a CSV file of service tags**
+
+```powershell
 Get-ServiceEntitlements -csv -csvPath "C:\Temp\DellServiceTags.csv"
 ```
 
-**Using Azure Key Vault:**
+**Use Azure Key Vault for authentication**
 
 ```powershell
-# Searching for a specific service tag with Key Vault
-Get-ServiceEntitlements -serviceTag 24WPX42 -UseKeyVault -KeyVaultName "YourKeyVault"
-
-# Process a CSV file using Key Vault credentials
-Get-ServiceEntitlements -csv -csvPath "C:\Temp\DellServiceTags.csv" -UseKeyVault -KeyVaultName "YourKeyVault"
-
-# Using custom secret names in Key Vault
-Get-ServiceEntitlements -serviceTag 24WPX42 -UseKeyVault -KeyVaultName "YourKeyVault" `
-    -ApiKeySecretName "CustomApiKey" -ClientSecretName "CustomClientSecret"
+Get-ServiceEntitlements -serviceTag "24WPX42" -UseKeyVault -KeyVaultName "MyKeyVault"
 ```
 
-### Key Vault Management Cmdlets
+### Set-DellKeyVaultSecrets
 
-#### Set-DellKeyVaultSecrets
 Stores Dell API credentials in Azure Key Vault.
 
-```powershell
-# Store new credentials
-Set-DellKeyVaultSecrets -KeyVaultName "YourKeyVault"
+#### Parameters
 
-# Import existing credentials
-Set-DellKeyVaultSecrets -KeyVaultName "YourKeyVault" -UseExistingCredentials
+- `-KeyVaultName` (String): The name of the Azure Key Vault.
+- `-ClientId` (String): The Dell API Client ID (API Key).
+- `-ClientSecret` (String): The Dell API Client Secret.
+- `-ApiKeySecretName` (String): The name to use for the API Key secret.
+- `-ClientIdSecretName` (String): The name to use for the Client ID secret.
+- `-ClientSecretName` (String): The name to use for the Client Secret.
+- `-Force` (Switch): Forces overwriting of existing secrets.
+
+#### Example
+
+```powershell
+Set-DellKeyVaultSecrets -KeyVaultName "MyKeyVault" -ClientId "ApiKey123456" -ClientSecret "SecretValue789012"
 ```
 
-#### Get-DellKeyVaultSecrets
-Retrieves Dell API credentials from Azure Key Vault.
+### Export-DellKeyVaultToXml
+
+Exports Dell API credentials from Azure Key Vault to a local XML file.
+
+#### Parameters
+
+- `-KeyVaultName` (String): The name of the Azure Key Vault.
+- `-ApiKeySecretName` (String): The name of the secret storing the Dell API Key.
+- `-ClientSecretName` (String): The name of the secret storing the Dell Client Secret.
+- `-OutputPath` (String): The file path where the exported XML file will be saved.
+- `-Force` (Switch): Forces overwriting of the output file if it already exists.
+
+#### Example
 
 ```powershell
-Get-DellKeyVaultSecrets -KeyVaultName "YourKeyVault"
-```
-
-#### Export-DellKeyVaultToXml
-Exports Dell API credentials from Azure Key Vault to local XML storage.
-
-```powershell
-# Export to default location
-Export-DellKeyVaultToXml -KeyVaultName "YourKeyVault"
-
-# Export with custom settings
-Export-DellKeyVaultToXml -KeyVaultName "YourKeyVault" `
-    -OutputPath "C:\path\to\credentials.xml" `
-    -ApiKeySecretName "CustomApiKey" `
-    -ClientSecretName "CustomClientSecret" `
-    -Force
+Export-DellKeyVaultToXml -KeyVaultName "MyKeyVault" -OutputPath "C:\Credentials\DellApi.xml"
 ```
 
 ## CSV File Format
 
-The CSV file requires a column named `ServiceTag`. If a CSV is not passed or passed with an incorrect table header, it will create one and open it for the user to paste the ServiceTag values.
+When using the `-csv` parameter with Get-ServiceEntitlements, the CSV file must contain a column named `ServiceTag`. For example:
 
-Example CSV format:
-```csv
+```
 ServiceTag
 24WPX42
-7B2VX32
-9C3NP12
+673W6S3
+ABC123
 ```
+
+If you don't provide a CSV file, the module will create a template file for you:
+
+```powershell
+Get-ServiceEntitlements -csv
+```
+
+## Cross-Platform Support
+
+The module automatically detects the operating system and adjusts file paths accordingly:
+- Windows: Uses `%USERPROFILE%\.dell\` for credential storage
+- Linux/macOS: Uses `$HOME/.dell/` for credential storage
 
 ## Contributing
 

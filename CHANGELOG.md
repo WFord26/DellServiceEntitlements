@@ -6,6 +6,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0] - 2025-03-11
+### Added
+- Added `Set-UserProfilePath.ps1` to set the user profile path based on the OS.
+- Added `Get-ServiceEntitlements.ps1` to retrieve the serial number and warranty information for Dell computers.
+- Added comprehensive documentation for all functions including markdown files for:
+  - `Get-ServiceEntitlements`
+  - `Set-DellKeyVaultSecrets` 
+  - `Export-DellKeyVaultToXml`
+- Expanded README with detailed usage examples and authentication methods
+
+### Updated
+- Updated `Get-DellApiKey.ps1` to set environment variables for API key and client secret.
+- Updated `Grant-DellToken.ps1` to save the token details to an XML file.
+- Updated `Test-DellToken.ps1` to check the validity of the Dell API authentication token and generate a new one if necessary.
+- Updated `Get-DellWarranty.ps1` to retrieve Dell warranty information for a given service tag.
+- Improved cross-platform support with better path handling for Windows, Linux, and macOS
+
+### Fixed
+- Fixed token refresh mechanism to ensure continuous API access
+- Improved error handling in CSV processing
+- Enhanced credential validation routines
+
 ## [0.3.0] - 2025-02-19
 ### Added
 - Azure Key Vault integration for secure credential storage (requires PowerShell 7.0+)
