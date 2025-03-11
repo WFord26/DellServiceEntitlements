@@ -21,11 +21,12 @@
     Copyright = '(c) 2024 Managed Solution. All rights reserved.'
 
     # Description of the functionality provided by this module
+
     Description = 'PowerShell module for retrieving Dell warranty and service information with support for both local storage and Azure Key Vault integration. Note: Azure Key Vault functionality requires PowerShell 7.0 or later.'
 
     # Minimum version of the PowerShell engine required by this module
     PowerShellVersion = '7.0'
-
+   
     # Name of the PowerShell host required by this module
     # PowerShellHostName = ''
 
