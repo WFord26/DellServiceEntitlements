@@ -2,8 +2,13 @@
 
 BeforeAll {
     # Import module - adjust path as needed
-    $ProjectRoot = $PSScriptRoot
-    $ModulePath = Join-Path -Path $ProjectRoot -ChildPath "DellServiceEntitlements.psm1"
+    $ProjectRoot = Split-Path $PSScriptRoot -Parent
+    $ModulePath = Join-Path -Path $ProjectRoot -ChildPath "DellServiceEntitlements\DellServiceEntitlements.psd1"
+    
+    if (-not (Test-Path $ModulePath)) {
+        throw "Module manifest not found at: $ModulePath"
+    }
+    
     Import-Module -Name $ModulePath -Force
 
     # Mock credentials for testing
@@ -52,8 +57,7 @@ Describe "Module Installation Tests" {
             $expectedFunctions = @(
                 'Get-ServiceEntitlements',
                 'Set-DellKeyVaultSecrets',
-                'Get-DellKeyVaultSecrets',
-                'Update-DellKeyVaultToken'
+                'Export-DellKeyVaultToXml'
             )
             
             $exportedFunctions = Get-Command -Module DellServiceEntitlements
@@ -93,29 +97,81 @@ Describe "Local Storage Functionality Tests" {
 
     Context "Get-DellApiKey Local Storage" {
         It "Should prompt for credentials when no file exists" {
-            Mock Read-Host { return $script:TestApiKey }
-            { Get-DellApiKey } | Should -Not -Throw
-            Assert-MockCalled Read-Host -Times 1
+            InModuleScope DellServiceEntitlements {
+                # Mock the credential file check
+                Mock Test-Path { return $false } -ParameterFilter { $Path -like "*DellCredentials*" }
+                
+                # Mock Read-Host calls
+                Mock Read-Host { return $script:TestApiKey } -ParameterFilter { $Prompt -eq "Enter API Key" }
+                Mock Read-Host { 
+                    return ConvertTo-SecureString $script:TestClientSecret -AsPlainText -Force 
+                } -ParameterFilter { $AsSecureString -eq $true }
+                
+                # Mock Save-DellCredential to prevent file operations
+                Mock Save-DellCredential { }
+                
+                { Get-DellApiKey } | Should -Not -Throw
+                Assert-MockCalled Read-Host -Times 2
+                Assert-MockCalled Save-DellCredential -Times 1
+            }
         }
 
         It "Should set script-level variables" {
-            Mock Read-Host { return $script:TestApiKey }
-            Get-DellApiKey
-            $script:userClientKey | Should -Be $script:TestApiKey
+            InModuleScope DellServiceEntitlements {
+                # Mock the credential file check
+                Mock Test-Path { return $false } -ParameterFilter { $Path -like "*DellCredentials*" }
+                
+                # Mock Read-Host calls
+                Mock Read-Host { return $script:TestApiKey } -ParameterFilter { $Prompt -eq "Enter API Key" }
+                Mock Read-Host { 
+                    return ConvertTo-SecureString $script:TestClientSecret -AsPlainText -Force 
+                } -ParameterFilter { $AsSecureString -eq $true }
+                
+                # Mock Save-DellCredential to prevent file operations
+                Mock Save-DellCredential { }
+                
+                Get-DellApiKey
+                $script:userClientKey | Should -Be $script:TestApiKey
+                $script:userClientSecret | Should -Be $script:TestClientSecret
+            }
         }
     }
 
     Context "Get-ServiceEntitlements Local Storage" {
         It "Should retrieve warranty information for a specific service tag" {
-            $result = Get-ServiceEntitlements -serviceTag $script:TestServiceTag
-            $result | Should -Not -BeNull
-            Assert-MockCalled Invoke-RestMethod -Times 2 # One for token, one for warranty
+            InModuleScope DellServiceEntitlements {
+                # Mock the API calls to prevent real network requests
+                Mock Get-DellApiKey { 
+                    $script:userClientKey = $script:TestApiKey
+                    $script:userClientSecret = $script:TestClientSecret
+                }
+                Mock Grant-DellToken { return "mock-token" }
+                Mock Get-DellWarranty { return $script:MockWarrantyResponse }
+                
+                $result = Get-ServiceEntitlements -serviceTag $script:TestServiceTag
+                $result | Should -Not -BeNull
+                $result.serviceTag | Should -Be $script:TestServiceTag
+            }
         }
 
         It "Should detect local Dell system" {
-            $result = Get-ServiceEntitlements
-            $result | Should -Not -BeNull
-            Assert-MockCalled Get-WmiObject -Times 2 # One for manufacturer, one for serial
+            InModuleScope DellServiceEntitlements {
+                # Mock WMI calls
+                Mock Get-WmiObject { return @{ Manufacturer = "Dell Inc." } } -ParameterFilter { $Class -eq "Win32_ComputerSystem" }
+                Mock Get-WmiObject { return @{ SerialNumber = $script:TestServiceTag } } -ParameterFilter { $Class -eq "Win32_BIOS" }
+                
+                # Mock the API calls
+                Mock Get-DellApiKey { 
+                    $script:userClientKey = $script:TestApiKey
+                    $script:userClientSecret = $script:TestClientSecret
+                }
+                Mock Grant-DellToken { return "mock-token" }
+                Mock Get-DellWarranty { return $script:MockWarrantyResponse }
+                
+                $result = Get-ServiceEntitlements
+                $result | Should -Not -BeNull
+                Assert-MockCalled Get-WmiObject -Times 2 # One for manufacturer, one for serial
+            }
         }
     }
 }
@@ -137,27 +193,54 @@ Describe "Azure Key Vault Functionality Tests" {
 
     Context "Set-DellKeyVaultSecrets" {
         It "Should store credentials in Key Vault" {
-            { Set-DellKeyVaultSecrets -KeyVaultName $script:TestKeyVaultName } | Should -Not -Throw
-            Assert-MockCalled Set-AzKeyVaultSecret -Times 2 # One for API key, one for client secret
+            InModuleScope DellServiceEntitlements {
+                # Mock Read-Host for credential input
+                Mock Read-Host { return $script:TestApiKey } -ParameterFilter { $Prompt -eq "Enter API Key" }
+                Mock Read-Host { return $script:TestClientSecret } -ParameterFilter { $Prompt -eq "Enter Client Secret" }
+                
+                { Set-DellKeyVaultSecrets -KeyVaultName $script:TestKeyVaultName } | Should -Not -Throw
+                Assert-MockCalled Set-AzKeyVaultSecret -Times 2 # One for API key, one for client secret
+            }
         }
 
         It "Should verify Key Vault access" {
-            Set-DellKeyVaultSecrets -KeyVaultName $script:TestKeyVaultName
-            Assert-MockCalled Get-AzKeyVault -Times 1
+            InModuleScope DellServiceEntitlements {
+                # Mock Read-Host for credential input
+                Mock Read-Host { return $script:TestApiKey } -ParameterFilter { $Prompt -eq "Enter API Key" }
+                Mock Read-Host { return $script:TestClientSecret } -ParameterFilter { $Prompt -eq "Enter Client Secret" }
+                
+                Set-DellKeyVaultSecrets -KeyVaultName $script:TestKeyVaultName
+                Assert-MockCalled Get-AzKeyVault -Times 1
+            }
         }
     }
 
     Context "Get-ServiceEntitlements with Key Vault" {
         It "Should retrieve credentials from Key Vault" {
-            $result = Get-ServiceEntitlements -serviceTag $script:TestServiceTag -UseKeyVault -KeyVaultName $script:TestKeyVaultName
-            $result | Should -Not -BeNull
-            Assert-MockCalled Get-AzKeyVaultSecret -Times 1
+            InModuleScope DellServiceEntitlements {
+                # Mock the internal functions
+                Mock Get-DellKeyVaultSecrets { 
+                    return @{
+                        ApiKey = $script:TestApiKey
+                        ClientSecret = $script:TestClientSecret
+                    }
+                }
+                Mock Grant-DellToken { return "mock-token" }
+                Mock Get-DellWarranty { return $script:MockWarrantyResponse }
+                
+                $result = Get-ServiceEntitlements -serviceTag $script:TestServiceTag -UseKeyVault -KeyVaultName $script:TestKeyVaultName
+                $result | Should -Not -BeNull
+                Assert-MockCalled Get-DellKeyVaultSecrets -Times 1
+            }
         }
 
         It "Should handle Key Vault errors gracefully" {
-            Mock Get-AzKeyVaultSecret { throw "Key Vault error" }
-            { Get-ServiceEntitlements -serviceTag $script:TestServiceTag -UseKeyVault -KeyVaultName $script:TestKeyVaultName } | 
-                Should -Not -Throw
+            InModuleScope DellServiceEntitlements {
+                Mock Get-DellKeyVaultSecrets { throw "Key Vault error" }
+                
+                { Get-ServiceEntitlements -serviceTag $script:TestServiceTag -UseKeyVault -KeyVaultName $script:TestKeyVaultName } | 
+                    Should -Not -Throw
+            }
         }
     }
 }
