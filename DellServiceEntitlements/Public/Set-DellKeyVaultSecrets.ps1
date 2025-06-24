@@ -1,3 +1,34 @@
+<#
+.SYNOPSIS
+Sets Dell API credentials as secrets in an Azure Key Vault.
+
+.DESCRIPTION
+This function stores Dell API Client ID and Client Secret as secrets in the specified Azure Key Vault.
+
+.PARAMETER KeyVaultName
+The name of the Azure Key Vault where secrets will be stored.
+
+.PARAMETER ClientId
+The Dell API Client ID to store as a secret.
+
+.PARAMETER ClientSecret
+The Dell API Client Secret to store as a secret.
+
+.PARAMETER ApiKeySecretName
+The name for the API key secret in Key Vault. Defaults to "DellApiKey".
+
+.PARAMETER ClientIdSecretName
+The name for the Client ID secret in Key Vault. Defaults to "DellClientId".
+
+.PARAMETER ClientSecretName
+The name for the Client Secret in Key Vault. Defaults to "DellClientSecret".
+
+.PARAMETER Force
+Forces overwriting of existing secrets without prompting.
+
+.EXAMPLE
+Set-DellKeyVaultSecrets -KeyVaultName "MyKeyVault" -ClientId "your-client-id" -ClientSecret "your-client-secret"
+#>
 function Set-DellKeyVaultSecrets {
     [CmdletBinding()]
     param (

@@ -1,7 +1,25 @@
 # Set-DellKeyVaultSecrets
 
-## SYNOPSIS
-Sets Dell API credentials as secrets in an Azure Key Vault.
+## ### -ClientSecret
+The Dell API Client Secret to be stored in the Key Vault.
+
+```powershell
+-ClientSecret <String>
+```
+
+Required: Yes
+
+### -ApiKeySecretName
+The name to use for the API Key secret in the Key Vault. Defaults to "DellApiKey" if not specified.
+
+```powershell
+-ApiKeySecretName <String>
+```
+
+Required: No  
+Default: "DellApiKey"
+
+### -ClientIdSecretNameets Dell API credentials as secrets in an Azure Key Vault.
 
 ## DESCRIPTION
 The `Set-DellKeyVaultSecrets` function securely stores Dell API credentials (Client ID and Client Secret) in an Azure Key Vault. This allows for secure management of API credentials in enterprise environments and integration with the DellServiceEntitlements module's Key Vault authentication mode.
@@ -87,7 +105,7 @@ This command stores the Dell API credentials in the specified Key Vault with def
 
 ### Example 2: Store Dell API credentials with custom secret names
 ```powershell
-Set-DellKeyVaultSecrets -KeyVaultName "MyKeyVault" -ClientId "ApiKey123456" -ClientSecret "SecretValue789012" -ApiKeySecretName "MyDellApiKey" -ClientSecretName "MyDellClientSecret"
+Set-DellKeyVaultSecrets -KeyVaultName "MyKeyVault" -ClientId "ApiKey123456" -ClientSecret "SecretValue789012" -ApiKeySecretName "MyDellApiKey" -ClientIdSecretName "MyDellClientId" -ClientSecretName "MyDellClientSecret"
 ```
 
 This command stores the Dell API credentials in the specified Key Vault with custom secret names.
