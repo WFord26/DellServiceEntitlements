@@ -1,7 +1,7 @@
 # Get-ServiceEntitlements.ps1
 <#PSScriptInfo
 
-.VERSION 0.3.0
+.VERSION 0.4.2
 
 .GUID ce5906a5-7211-4f45-bd49-7e0691741347
 
@@ -41,6 +41,9 @@ Retrieves the serial number and warranty information for Dell computers.
 .PARAMETER csv
 A switch parameter to indicate that a CSV file containing service tags will be processed. If set to $true, the csvPath parameter is required.
 
+.PARAMETER passThrough
+A switch parameter to return objects directly to the pipeline instead of formatting output or exporting to CSV. This is useful for further processing of the warranty data.
+
 .PARAMETER csvPath
 The file path to the CSV file containing service tags. This parameter is required if the csv parameter is set to $true.
 
@@ -73,6 +76,10 @@ Fetches warranty information for the specified service tag using Azure Key Vault
 .EXAMPLE
 Get-ServiceEntitlements
 Fetches the serial number and warranty information for the local Dell computer using local credential storage.
+
+.EXAMPLE
+Get-ServiceEntitlements -serviceTag "ABC1234" -passThrough | Where-Object { $_.EntitlementType -eq "ProSupport" }
+Fetches warranty information for the specified service tag and returns raw objects for further processing.
 #>
 function Get-ServiceEntitlements {
     [CmdletBinding()]

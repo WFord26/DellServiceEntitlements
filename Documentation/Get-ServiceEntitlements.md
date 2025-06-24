@@ -24,6 +24,13 @@ A switch parameter that indicates a CSV file containing service tags will be pro
 -csv
 ```
 
+### -passThrough
+A switch parameter to return objects directly to the pipeline instead of formatting output or exporting to CSV. This is useful for further processing of the warranty data.
+
+```powershell
+-passThrough
+```
+
 ### -csvPath
 The file path to the CSV file containing service tags. This parameter is only used when the `-csv` switch is specified.
 
@@ -110,6 +117,13 @@ Get-ServiceEntitlements -csv -csvPath "C:\Temp\DellServiceTags.csv" -UseKeyVault
 
 This command processes service tags from a CSV file using credentials stored in Azure Key Vault.
 
+### Example 6: Get warranty information and pass through for further processing
+```powershell
+Get-ServiceEntitlements -serviceTag "24WPX42" -passThrough | Where-Object { $_.EntitlementType -eq "ProSupport" }
+```
+
+This command fetches warranty information for a specific service tag and returns the raw objects for further filtering or processing.
+
 ## CSV FILE FORMAT
 
 The CSV file must contain a column named `ServiceTag` which contains the Dell service tags to be queried. For example:
@@ -135,7 +149,7 @@ When processing a single service tag, the function returns a PowerShell object c
 - Ship date
 - Entitlements details including warranty start/end dates and service level information
 
-When processing multiple service tags via CSV, it exports a CSV file containing the warranty information for all service tags to the user's profile directory with a filename like `DellWarranty-2024-12-24-16.49.36.csv`.
+When processing multiple service tags via CSV, it exports a CSV file containing the warranty information for all service tags to the user's profile directory with a filename like `DellWarranty-2025-06-24-16.49.36.csv`.
 
 ## AZURE KEY VAULT INTEGRATION
 
