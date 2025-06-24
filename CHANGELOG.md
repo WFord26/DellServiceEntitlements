@@ -6,6 +6,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.3] - 2025-06-24
+
+### Updated
+- Enhanced documentation for all public functions with detailed parameter descriptions and examples:
+  - `Get-ServiceEntitlements` - Added comprehensive parameter documentation and usage examples
+  - `Set-DellKeyVaultSecrets` - Improved parameter descriptions and added practical examples
+  - `Export-DellKeyVaultToXml` - Enhanced function documentation with detailed parameter descriptions and additional notes
+- Updated module version to 0.4.3
+- Updated copyright year to 2025 in module manifest
+- Improved Pester test structure and reliability:
+  - Enhanced test organization with proper module scoping
+  - Added comprehensive mocking for Azure Key Vault functionality
+  - Improved test coverage for error handling scenarios
+  - Fixed test path resolution for better cross-platform compatibility
+
+### Added
+- Added `passThrough` parameter to `Get-ServiceEntitlements` function for better integration with other scripts
+- Enhanced InModuleScope testing for better isolation of unit tests
+
 ## [0.4.2] - 2025-03-11
 
 ### Updated
