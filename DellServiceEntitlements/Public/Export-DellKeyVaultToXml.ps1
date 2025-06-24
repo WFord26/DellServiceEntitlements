@@ -1,3 +1,58 @@
+<#
+.SYNOPSIS
+Exports Dell API credentials from Azure Key Vault to a local XML file.
+
+.DESCRIPTION
+The Export-DellKeyVaultToXml function retrieves Dell API credentials (API Key and Client Secret) from an Azure Key Vault and exports them to a local XML file. This allows for transitioning from Key Vault-based authentication to local credential storage in the DellServiceEntitlements module.
+
+The function validates Azure connectivity and Key Vault access before retrieving the secrets. It converts the secrets into a PSCredential object and securely stores them in an XML file using PowerShell's Export-Clixml cmdlet.
+
+.PARAMETER KeyVaultName
+The name of the Azure Key Vault where Dell API credentials are stored.
+
+.PARAMETER ApiKeySecretName
+Optional. The name of the secret in Key Vault that stores the Dell API Key. Defaults to "DellApiKey".
+
+.PARAMETER ClientSecretName
+Optional. The name of the secret in Key Vault that stores the Dell Client Secret. Defaults to "DellClientSecret".
+
+.PARAMETER OutputPath
+Optional. The file path where the exported XML file will be saved. If not specified, the file will be saved to a default location based on the operating system:
+- Windows: %USERPROFILE%\.dell\apiCredential.xml
+- Linux/macOS: $HOME/.dell/apiCredential.xml
+
+.PARAMETER Force
+Optional. A switch parameter that forces overwriting of the output file if it already exists. If not specified and the output file exists, an error is displayed.
+
+.EXAMPLE
+Export-DellKeyVaultToXml -KeyVaultName "MyKeyVault"
+Retrieves Dell API credentials from the specified Key Vault and exports them to the default location.
+
+.EXAMPLE
+Export-DellKeyVaultToXml -KeyVaultName "MyKeyVault" -ApiKeySecretName "MyDellApiKey" -ClientSecretName "MyDellClientSecret"
+Retrieves Dell API credentials using custom secret names and exports them to the default location.
+
+.EXAMPLE
+Export-DellKeyVaultToXml -KeyVaultName "MyKeyVault" -OutputPath "C:\Credentials\DellApi.xml"
+Retrieves Dell API credentials and exports them to the specified custom file path.
+
+.EXAMPLE
+Export-DellKeyVaultToXml -KeyVaultName "MyKeyVault" -OutputPath "C:\Credentials\DellApi.xml" -Force
+Retrieves Dell API credentials and exports them to the specified file path, overwriting the file if it already exists.
+
+.NOTES
+- Requires Azure PowerShell modules (Az.Accounts and Az.KeyVault)
+- Requires valid Azure credentials with appropriate permissions to the specified Key Vault
+- PowerShell 7.0 or higher is recommended for Azure Key Vault operations
+- The exported credentials are stored securely in an XML file using PowerShell's secure credential serialization
+
+.LINK
+https://github.com/WFord26/DellServiceEntitlements
+
+.LINK
+https://docs.microsoft.com/en-us/azure/key-vault/
+
+#>
 function Export-DellKeyVaultToXml {
     [CmdletBinding()]
     param (
