@@ -3,7 +3,7 @@
     RootModule = 'DellServiceEntitlements.psm1'
 
     # Version number of this module.
-    ModuleVersion = '0.4.2'
+    ModuleVersion = '0.4.3'
 
     # Supported PSEditions
     CompatiblePSEditions = @('Core')
@@ -15,10 +15,8 @@
     Author = 'wford@managedsolution.com'
 
     # Company or vendor of this module
-    CompanyName = 'Managed Solution'
-
-    # Copyright statement for this module
-    Copyright = '(c) 2024 Managed Solution. All rights reserved.'
+    CompanyName = 'Managed Solution'    # Copyright statement for this module
+    Copyright = '(c) 2025 Managed Solution. All rights reserved.'
 
     # Description of the functionality provided by this module
 
