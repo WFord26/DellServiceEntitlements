@@ -1,13 +1,20 @@
-$ModuleName = 'C:\Users\wford.MS\GitHub\DellServiceEntitlements\DellServiceEntitlements.psd1'
-Import-Module -name $ModuleName -Force
+# Define standardized paths
+$BuildRoot = $PSScriptRoot
+$ModuleRoot = Split-Path $BuildRoot -Parent
+$ModuleManifest = Join-Path $ModuleRoot "DellServiceEntitlements.psd1"
+$TestsPath = Join-Path $ModuleRoot "tests"
+$BuildPath = $BuildRoot
+
+# Import module and get command list
+Import-Module -Name $ModuleManifest -Force
 $commandList = Get-Command -Module DellServiceEntitlements
 
 # Import helper functions
-. "$PSScriptRoot\ModuleVersionHelper.ps1"
+. (Join-Path $BuildRoot "ModuleVersionHelper.ps1")
 
 # Test Functions first before building the fingerprint
 Write-Output "Running PowerShell script tests..."
-& "C:\Users\wford.MS\GitHub\DellServiceEntitlements\tests\Test-AllPowerShellScripts.ps1" -IncludeModuleTests
+& (Join-Path $TestsPath "Test-AllPowerShellScripts.ps1") -IncludeModuleTests
 $exitCode = $LASTEXITCODE
 Write-Output "Test exit code: $exitCode"
 if ($exitCode -ne 0) {
@@ -17,7 +24,7 @@ if ($exitCode -ne 0) {
 
 # Run Check-DocumentationMD to ensure documentation is up-to-date
 Write-Output "Checking documentation..."
-$docCheck = & "C:\Users\wford.MS\GitHub\DellServiceEntitlements\tests\Check-DocumentationMD.ps1"
+$docCheck = & (Join-Path $TestsPath "Check-DocumentationMD.ps1")
 Write-Output "Documentation check result: $docCheck"
 <#
 if (-not $docCheck) {
@@ -53,13 +60,18 @@ foreach ($command in $commandList) {
     }
 }
 
+# Define fingerprint paths
+$FingerprintPath = Join-Path $BuildPath "fingerprint"
+$FingerprintBackupDir = Join-Path $BuildPath "Fingerprints"
+
 # Get the old fingerprint if it exists
 $oldFingerprint = @()
-if (Test-Path "C:\Users\wford.MS\GitHub\DellServiceEntitlements\Build\fingerprint") {
-    $oldFingerprint = Get-Content "C:\Users\wford.MS\GitHub\DellServiceEntitlements\Build\fingerprint"
+if (Test-Path $FingerprintPath) {
+    $oldFingerprint = Get-Content $FingerprintPath
     # Backup the old fingerprint
     $date = Get-Date -Format "yyyy-MM-dd_HH-mm-ss"
-    Copy-Item -Path "C:\Users\wford.MS\GitHub\DellServiceEntitlements\Build\fingerprint" -Destination "C:\Users\wford.MS\GitHub\DellServiceEntitlements\Build\Fingerprints\fingerprint$($date).bak" -Force
+    $backupPath = Join-Path $FingerprintBackupDir "fingerprint$($date).bak"
+    Copy-Item -Path $FingerprintPath -Destination $backupPath -Force
 }
 
 # Default to a patch version bump
@@ -113,8 +125,7 @@ if ($bumpVersionType -ne 'Major') {
 Write-Output "Version bump type: $bumpVersionType"
 
 # Save the new fingerprint
-Set-Content -Path "C:\Users\wford.MS\GitHub\DellServiceEntitlements\Build\fingerprint" -Value $fingerprint
+Set-Content -Path $FingerprintPath -Value $fingerprint
 
 # Update the module version
-$ManifestPath = 'C:\Users\wford.MS\GitHub\DellServiceEntitlements\DellServiceEntitlements.psd1'
-Step-ModuleVersion -Path $ManifestPath -By $bumpVersionType
+Step-ModuleVersion -Path $ModuleManifest -By $bumpVersionType

@@ -1,0 +1,265 @@
+{
+  "PublicFileCount": 3,
+  "TotalLinesofCode": 1225.0,
+  "TotalPrivateLines": 674.0,
+  "DocStats": [
+    {
+      "Name": "Export-DellKeyVaultToXml.md",
+      "Lines": 137,
+      "Words": 650
+    },
+    {
+      "Name": "Get-ServiceEntitlements.md",
+      "Lines": 178,
+      "Words": 869
+    },
+    {
+      "Name": "Set-DellKeyVaultSecrets.md",
+      "Lines": 158,
+      "Words": 649
+    }
+  ],
+  "TotalPrivateWords": 2601.0,
+  "PublicStats": [
+    {
+      "Name": "Export-DellKeyVaultToXml.ps1",
+      "Lines": 139,
+      "Words": 651
+    },
+    {
+      "Name": "Get-ServiceEntitlements.ps1",
+      "Lines": 295,
+      "Words": 1142
+    },
+    {
+      "Name": "Set-DellKeyVaultSecrets.ps1",
+      "Lines": 117,
+      "Words": 441
+    }
+  ],
+  "DocFileCount": 3,
+  "TotalDocWords": 2168.0,
+  "TotalWords": 7003.0,
+  "WordDifference": 672.0,
+  "TotalPublicLines": 551.0,
+  "Date": "2025-06-25 14:35:11",
+  "PrivateStats": [
+    {
+      "Name": "Get-DellApiKey.ps1",
+      "Lines": 75,
+      "Words": 348
+    },
+    {
+      "Name": "Get-DellKeyVaultSecrets.ps1",
+      "Lines": 51,
+      "Words": 170
+    },
+    {
+      "Name": "Get-DellWarranty.ps1",
+      "Lines": 110,
+      "Words": 449
+    },
+    {
+      "Name": "Grant-DellToken.ps1",
+      "Lines": 79,
+      "Words": 278
+    },
+    {
+      "Name": "Import-SavedCredential.ps1",
+      "Lines": 39,
+      "Words": 170
+    },
+    {
+      "Name": "New-DellTemplateCSV.ps1",
+      "Lines": 36,
+      "Words": 175
+    },
+    {
+      "Name": "Save-DellCredential.ps1",
+      "Lines": 44,
+      "Words": 246
+    },
+    {
+      "Name": "Set-UserProfilePath.ps1",
+      "Lines": 9,
+      "Words": 25
+    },
+    {
+      "Name": "Test-DellToken.ps1",
+      "Lines": 108,
+      "Words": 419
+    },
+    {
+      "Name": "Test-PowerShellVersion.ps1",
+      "Lines": 14,
+      "Words": 47
+    },
+    {
+      "Name": "Test-ServiceTagCSV.ps1",
+      "Lines": 78,
+      "Words": 176
+    },
+    {
+      "Name": "Update-DellKeyVaultToken.ps1",
+      "Lines": 31,
+      "Words": 98
+    }
+  ],
+  "TotalFileCount": 18,
+  "TotalDocLines": 473.0,
+  "TotalPublicWords": 2234.0,
+  "PrivateFileCount": 12,
+  "LineDifference": 125.0,
+  "TotalLines": 1698.0,
+  "PreviousStats": {
+    "PrivateStats": [
+      {
+        "Name": "Get-DellApiKey.ps1",
+        "Lines": 75,
+        "Words": 348
+      },
+      {
+        "Name": "Get-DellKeyVaultSecrets.ps1",
+        "Lines": 51,
+        "Words": 170
+      },
+      {
+        "Name": "Get-DellWarranty.ps1",
+        "Lines": 110,
+        "Words": 449
+      },
+      {
+        "Name": "Grant-DellToken.ps1",
+        "Lines": 79,
+        "Words": 278
+      },
+      {
+        "Name": "Import-SavedCredential.ps1",
+        "Lines": 39,
+        "Words": 170
+      },
+      {
+        "Name": "New-DellTemplateCSV.ps1",
+        "Lines": 36,
+        "Words": 175
+      },
+      {
+        "Name": "Save-DellCredential.ps1",
+        "Lines": 44,
+        "Words": 246
+      },
+      {
+        "Name": "Set-UserProfilePath.ps1",
+        "Lines": 9,
+        "Words": 25
+      },
+      {
+        "Name": "Test-DellToken.ps1",
+        "Lines": 108,
+        "Words": 419
+      },
+      {
+        "Name": "Test-PowerShellVersion.ps1",
+        "Lines": 14,
+        "Words": 47
+      },
+      {
+        "Name": "Test-ServiceTagCSV.ps1",
+        "Lines": 78,
+        "Words": 176
+      },
+      {
+        "Name": "Update-DellKeyVaultToken.ps1",
+        "Lines": 31,
+        "Words": 98
+      }
+    ],
+    "TotalDocWords": 2039.0,
+    "Date": "2025-06-24 15:27:23",
+    "TotalPublicWords": 1691.0,
+    "TotalPublicLines": 458.0,
+    "TotalDocLines": 441.0,
+    "DocStats": [
+      {
+        "Name": "Export-DellKeyVaultToXml.md",
+        "Lines": 137,
+        "Words": 650
+      },
+      {
+        "Name": "Get-ServiceEntitlements.md",
+        "Lines": 164,
+        "Words": 791
+      },
+      {
+        "Name": "Set-DellKeyVaultSecrets.md",
+        "Lines": 140,
+        "Words": 598
+      }
+    ],
+    "TotalPrivateLines": 674.0,
+    "WordDifference": 4292.0,
+    "TotalWords": 6331.0,
+    "LineDifference": 1132.0,
+    "PrivateFileCount": 12,
+    "TotalPrivateWords": 2601.0,
+    "PreviousStats": {
+      "PrivateStats": null,
+      "TotalDocWords": 2039.0,
+      "Date": "2025-06-24 15:25:54",
+      "TotalPublicWords": null,
+      "TotalPublicLines": null,
+      "TotalDocLines": 441.0,
+      "DocStats": [
+        {
+          "Name": "Export-DellKeyVaultToXml.md",
+          "Lines": 137,
+          "Words": 650
+        },
+        {
+          "Name": "Get-ServiceEntitlements.md",
+          "Lines": 164,
+          "Words": 791
+        },
+        {
+          "Name": "Set-DellKeyVaultSecrets.md",
+          "Lines": 140,
+          "Words": 598
+        }
+      ],
+      "TotalPrivateLines": null,
+      "WordDifference": 0,
+      "TotalWords": 2039.0,
+      "LineDifference": 0,
+      "PrivateFileCount": 0,
+      "TotalPrivateWords": null,
+      "TotalLinesofCode": null,
+      "DocFileCount": 3,
+      "TotalFileCount": 3,
+      "PublicStats": null,
+      "PublicFileCount": 0,
+      "TotalLines": 441.0
+    },
+    "TotalLinesofCode": 1132.0,
+    "DocFileCount": 3,
+    "TotalFileCount": 18,
+    "PublicStats": [
+      {
+        "Name": "Export-DellKeyVaultToXml.ps1",
+        "Lines": 84,
+        "Words": 297
+      },
+      {
+        "Name": "Get-ServiceEntitlements.ps1",
+        "Lines": 288,
+        "Words": 1085
+      },
+      {
+        "Name": "Set-DellKeyVaultSecrets.ps1",
+        "Lines": 86,
+        "Words": 309
+      }
+    ],
+    "PublicFileCount": 3,
+    "TotalLines": 1573.0
+  }
+}
