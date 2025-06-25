@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.4.4] - 2025-06-25
+## [0.4.4] - 2025-06-25 - Build System Standardization
 
 ### Fixed
 - **Build System Standardization**: Completely standardized all build and test scripts for portability and maintainability
